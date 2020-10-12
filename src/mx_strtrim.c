@@ -1,26 +1,21 @@
 #include "libmx.h"
 
 char *mx_strtrim(const char *str) {
-    if (str == 0)
-        return 0;
+    char *cleared = NULL;
+    int len;
 
-    int f = -1;
-    int l = -1;
-
-    int length = mx_strlen(str);
-    for (int i = 0; i < length; i++) {
-        if (!mx_isspace(str[i])) {
-            l = i;
-            if (f == -1) 
-                f = i;
-        }
+    if (NULL == str)
+        return NULL;
+    while(mx_isspace(*str))
+        str++;
+    len = mx_strlen(str);
+    for (int i = len - 1; mx_isspace(str[i]); i--)
+        len--;
+    if (len < 0) {
+        cleared = mx_strnew(0);
+        return cleared;
     }
-
-    if (f == -1)
-        return mx_strnew(0);
-
-    int newLength = length - f - length + l+ 1;
-    char *result = mx_strnew(newLength);
-    mx_strncpy(result, str + f, newLength);
-    return result;
+    cleared = mx_strnew(len);
+    cleared = mx_strncpy(cleared, str, len);
+    return cleared;
 }
